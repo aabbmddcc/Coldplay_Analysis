@@ -19,4 +19,4 @@ To reproduce the analysis or explore further, you'll need the following:
 ## Setup and Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/aabbmddcc/exercise-5
+   git clone https://github.com/aabbmddcc/Coldplay_Analysis
