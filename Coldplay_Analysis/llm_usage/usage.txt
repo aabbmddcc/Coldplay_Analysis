@@ -1,0 +1,18 @@
+LLM: ChatGPT-4o.
+Date: 3 October 2024
+
+help me create a .bib file, only citing this 'https://developer.spotify.com/documentation/web-api/'
+ChatGPT said:
+To create a .bib file citing the Spotify Web API documentation, you can use the following BibTeX entry:
+
+bibtex
+
+@manual{spotify_web_api,
+  title        = {Spotify Web API},
+  author       = {{Spotify Developer}},
+  year         = {2024},
+  url          = {https://developer.spotify.com/documentation/web-api/},
+  note         = {Accessed: 2024-10-09}
+}
+
+You can save this entry in a .bib file (e.g., references.bib). Let me know if you need any further customization or help!

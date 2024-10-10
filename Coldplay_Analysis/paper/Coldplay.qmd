@@ -1,0 +1,86 @@
+---
+title: "An Analysis of Coldplay’s Albums Using Spotify Data"
+author: "Mingrui Li"
+date: "9 October 2024"
+format: pdf
+execute:
+  echo: true
+  eval: true
+jupyter: python3
+---
+
+# Introduction
+
+The objective of this analysis was to explore the album data of the band Coldplay
+ using the Spotify API. By examining the number of tracks per album over time, this
+ study aims to identify patterns in Coldplay’s popularity from 2000 to 2024.
+
+# Methods
+
+Data was collected through Spotify’s API using Python’s `spotipy` library.
+The variables extracted included the album release date and the total number
+of tracks for each album. The dataset represents a convenience sample of
+Coldplay’s albums as listed on Spotify.
+
+The data was sorted by release date, and a time series plot was generated
+to visualize the total number of tracks per album over time.
+
+# Results
+
+The plot below shows the total number of tracks per album over time for Coldplay:
+
+```{python}
+#| echo: false
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
+import pandas as pd
+import matplotlib.pyplot as plt
+CLIENT_ID = 'f8cdefda193045bbbbaede179b6eb0e3'
+CLIENT_SECRET = 'a76cf10d1563490e80c3f44406cf6ad6'
+auth_manager = SpotifyClientCredentials(client_id=CLIENT_ID, client_secret=CLIENT_SECRET)
+sp = spotipy.Spotify(auth_manager=auth_manager)
+results = sp.search(q='Coldplay', type='artist')
+artist_id = results['artists']['items'][0]['id']
+albums = sp.artist_albums(artist_id, album_type='album')
+album_data = []
+for album in albums['items']:
+    album_info = {
+        'name': album['name'],
+        'release_date': album['release_date'],
+        'total_tracks': album['total_tracks'],
+        'id': album['id']
+    }
+    album_data.append(album_info)
+albums_df = pd.DataFrame(album_data)
+album_id = albums_df.iloc[0]['id']  # Get the first album ID
+tracks = sp.album_tracks(album_id)
+track_popularity = []
+for track in tracks['items']:
+    track_info = sp.track(track['id'])
+    track_popularity.append(track_info['popularity'])
+avg_popularity = sum(track_popularity) / len(track_popularity)
+albums_df['release_date'] = pd.to_datetime(albums_df['release_date'])
+albums_df = albums_df.sort_values(by='release_date')
+release_dates = albums_df['release_date'].to_numpy()
+total_tracks = albums_df['total_tracks'].to_numpy()
+plt.figure(figsize=(8, 5))
+plt.plot(release_dates, total_tracks, marker='o')
+plt.title('Total Tracks per Album Over Time')
+plt.xlabel('Release Date')
+plt.ylabel('Total Tracks')
+plt.show()
+```
+
+The number of tracks per album celebrates ups and downs, reaches an extraordinary peak in 2018, and started tapering off from there onward. This could be a good indication of how the band has changed its way of producing albums throughout the years, or maybe how the music industry is different now than it was years ago.
+
+# Discussion
+This graph represents the number of total tracks per album published by Coldplay between 2000 and 2024. Since the start of their musical career, the pattern of album releases' number has been quite dynamic. Initially, the number of tracks per album slowly and continuously rose up, which clearly indicated the gradual growth in the creative output of the band. Contrasting that, around 2009, we see a sharp peak followed by an immediate fall and may indicate an experimental phase in which Coldplay may have released shorter albums or EPs. The most pronounced peak comes at about 2018, with as many as 24 tracks; this may be the approach of releasing either a deluxe or double album. After this peak, the number of tracks goes down regularly, which may indicate a movement towards more concise, curated releases that reflect the evolving trends in the music industry where shorter, high-impact albums resonate increasingly. The last point, for 2024, shows an increase but not as tall as the one seen in 2016, which could mean a partial return to longer albums or a special project being released.
+
+These differences show how the band has continued to change its approach due to artistic direction, market demand, or other influences such as streaming and technological changes in the way music is distributed.
+
+# Conclusion
+Coldplay's album track counts have varied over the years, with heavy peaks and lows, which may indicate the shifts in their creative and production strategies. Meriting a high track count in 2016 is an outlier and likely signals a special album release, while the general post-2016 trend is that albums have shrunk. This may also insinuate that the 2024 increase is the further evolution of approach, a blend of old and new strategies, probably. Overall, Coldplay's trend in the issuance of albums reflects an adaptive and responsive approach—so it would likely be influenced by both internal artistic choices and external trends within the industry.
+
+# References
+Spotify API Documentation: https://developer.spotify.com/documentation/web-api/
+Python Software Foundation. 2023. Python: A Programming Language. Python Software Foundation. https://www.python.org/.
